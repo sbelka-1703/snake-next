@@ -1,8 +1,15 @@
 import { useState, useEffect, useRef } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import useInterval from '@use-it/interval'
+import { ethers } from 'ethers'
+//importing the abi for the snake smart contract 
+import Snake from '../artifacts/contracts/Snake.sol/Snake.json'
 
 import { HeadComponent as Head } from 'components/Head'
+
+//This is the address that you get when you succesfully deploy your contract on testnet
+const snakeAddress = "8b84c0892E4980926f691c3C942371982542"
+
 
 type Apple = {
   x: number
@@ -15,6 +22,34 @@ type Velocity = {
 }
 
 export default function SnakeGame() {
+
+
+
+  // request access to the user's MetaMask account
+  async function requestAccount() {
+    await window.ethereum.request({ method: 'eth_requestAccounts' });
+  }
+
+
+  async function getCurrentTime() {
+    if (typeof window.ethereum !== 'undefined') {
+      await requestAccount()
+      const provider = new ethers.providers.Web3Provider(window.ethereum)
+      const contract = new ethers.Contract(snakeAddress, Snake.abi, provider)
+      try {
+        const data = await contract.greet()
+        console.log('data: ', data)
+      } catch (err) {
+        console.log("Error: ", err)
+      }
+    }    
+
+  }
+
+
+
+
+
   // Canvas Settings
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const canvasWidth = 500
@@ -334,7 +369,10 @@ export default function SnakeGame() {
 
   return (
     <>
+     <button onClick={getCurrentTime}>Fetch Current Time</button>
       <Head />
+      
+
       <main>
         <canvas
           ref={canvasRef}

@@ -7,6 +7,12 @@ import 'styles/main.scss'
 // Import initial FontAwesome Styles: https://github.com/FortAwesome/react-fontawesome/issues/134#issuecomment-476276516
 import '@fortawesome/fontawesome-svg-core/styles.css'
 
+declare global {
+  interface Window {
+    ethereum: any;
+  }
+}
+
 // Import FontAwesome Icons
 import { config, library } from '@fortawesome/fontawesome-svg-core'
 import {
